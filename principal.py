@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
 from datetime import *
+#aprendiendo a usar p(Pythom-MySQL-Tkinter-Github)
 
 import MySQLdb
 def iniciar():
