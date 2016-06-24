@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.messagebox import showinfo
 #aprendiendo a usar p(Pythom-MySQL-Tkinter-Github)
 #autor: Winston Junior Rodriguez Stand
+#estudiante de ingenieria de sistemas
 
 import MySQLdb
 def iniciar():
