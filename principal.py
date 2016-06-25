@@ -55,8 +55,6 @@ def registrar():
 root = Tk()
 root.geometry("600x600")
 root.config(bg="#6E6E6E")
-logo = PhotoImage(file="button.png")
-labelogo = Label(root, image=logo).place(x=100,y=30)
 Usuario = Label(root, text="Usuario/Email", bg="#6E6E6E", fg="#000000", font="Arial").place(x=150, y =260)
 user = StringVar()
 cajaUser = Entry(root, textvariable=user).place(x=300, y=260)
