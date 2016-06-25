@@ -49,7 +49,30 @@ def registrar():
     contra = Label(registrarventana, text="Contraseña", bg="#6E6E6E", fg="#000000", font="Arial").place(x=150, y=300)
     con = StringVar()
     cajaContra = Entry(registrarventana, textvariable=con).place(x=250, y=300)
-    Registrar = Button(registrarventana, text="Registrar", bg="#01DF01", fg="#000000", font="Arial", command=registrar).place(x=300, y=350)
+    def registrarUs():
+        emaUs = ema.get()
+        contraUs = con.get()
+        value = (emaUs, contraUs)
+        try:
+            db = MySQLdb.connect("localhost", "root", "", "login")
+            showinfo("mensaje", "Exito")
+            try:
+                cursor = db.cursor()
+                sql = "INSERT INTO acceso (usuario, contra) VALUES (%s, %s)"
+                cursor.execute(sql, value)
+                db.commit()
+                showinfo("Exito", "Agregado con exito")
+                db.close()
+                ema.set("")
+                con.set("")
+            except:
+                showinfo("Error", "Ocurrio un error")
+                db.rollback()
+        except MySQLdb.OperationalError:
+            showinfo("No se pudo conectar")
+    Registrar = Button(registrarventana, text="Registrar", bg="#01DF01", fg="#000000", font="Arial", command=registrarUs).place(x=300, y=350)
+
+
 
 
 root = Tk()
