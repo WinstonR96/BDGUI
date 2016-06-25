@@ -12,10 +12,9 @@ def iniciar():
         bd = MySQLdb.connect("localhost", "root", "", "login")
         try:
             cursor=bd.cursor()
-            #if (cursor.execute("SELECT * FROM 'acceso' WHERE 'usuario'='" + usuario + "' AND 'contra'='" + contrasena + "'")):
-            if(cursor.execute("SELECT * FROM acceso WHERE usuario = 'usuario'")):
+            if (cursor.execute("SELECT * FROM `acceso` WHERE `usuario`='" + usuario +"'AND `contra`='" + contrasena + "'")):
                 bd.commit()
-                showinfo("Mensaje", "Inicio con exito: " + usuario)
+                showinfo("Mensaje", "Inicio con exito")
                 bd.close()
             else:
                 bd.commit()
