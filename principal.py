@@ -105,11 +105,68 @@ def principal():#metodo para definir la ventana, luego de iniciar sesion
 
         ver = Button(m, text="Ver", command=vis).place(x=400, y = 500)
 
+    def venborrar():
+        b = Toplevel()
+        b.geometry("600x600")
+        b.title("Eliminar Nota")
+        chose = Label(b, text="Escriba el titulo de la nota que de sea borrar").place(x=100,y=100)
+        tit = StringVar()
+        cajaTil = Entry(b, textvariable=tit).place(x=90, y =200)
+        def borrar():
+            if(tit.get()==""):
+                showinfo("Error", "Ingrese titulo de la nota a borrar")
+            else:
+                titletitulo = tit.get()
+                try:
+                    bd = MySQLdb.connect("localhost", "root", "","setup")
+                    try:
+                        cursor = bd.cursor()
+                        sql = "DELETE FROM notas WHERE titulo = '%s'"% titletitulo
+                        cursor.execute(sql)
+                        bd.commit()
+                        showinfo("Exito", "Eliminada con Exito")
+                    except:
+                        showinfo("Error","Ocurrio un error")
+                except MySQLdb.OperationalError:
+                    showinfo("Error", "No se puede conectar a la base de datos, pongase en contacto con el administrador")
+        borrar = Button(b, text="Borrar", command=borrar).place(x=150, y=250)
+
+    def venactual():
+        a = Toplevel()
+        a.geometry("600x600")
+        a.title("Actualizar")
+        opcion = Label(a,text="Ingrese Titulo de la nota que desea actualizar").place(x=50,y=50)
+        cati = StringVar()
+        cajaCati = Entry(a, textvariable=cati).place(x=50, y=70)
+        nuevocuerpo = Label(a, text="Ingrese la nueva nota asociada al titulo").place(x=60, y=100)
+        cacu = StringVar()
+        cajacacu = Entry(a, textvariable=cacu).place(x=60, y=150)
+        def actual():
+            if(cati.get()=="" or cacu.get()==""):
+                showinfo("Error", "Rellene campo vacio")
+            else:
+                titulo = cati.get()
+                nuevo = cacu.get()
+                try:
+                    bd = MySQLdb.connect("localhost","root","","setup")
+                    try:
+                        cursor = bd.cursor()
+                        sql = "UPDATE notas SET cuerpo ='%s' WHERE titulo = '%s'" % (nuevo, titulo)
+                        cursor.execute(sql)
+                        bd.commit()
+                        bd.close()
+                        showinfo("Exito", "Modificado con exito")
+                    except:
+                        bd.rollback()
+                        showinfo("Error", "Titulo no encontrado")
+                except MySQLdb.OperationalError:
+                    showinfo("Error", "No se puede conectar a la base de datos, pongase en contacto con el administrador")
+        actualizar = Button(a,text="Actualizar", command=actual).place(x=60, y = 300)
 
     opcion = Label(pri, text="Elija una opcion", bg="#6E6E6E", fg="#000000", font="Arial").place(x=100, y=100)
     crear = Button(pri, text="Crear", command=vencrear).place(x=150, y=150)
-    borrar = Button(pri, text="Eliminar").place(x=250, y=150)
-    actualizar = Button(pri, text="Actualizar").place(x=150, y=250)
+    borrar = Button(pri, text="Eliminar", command=venborrar).place(x=250, y=150)
+    actualizar = Button(pri, text="Actualizar", command=venactual).place(x=150, y=250)
     mostrar = Button(pri, text="Ver", command=venMostrar).place(x=250, y =250)
 
 
