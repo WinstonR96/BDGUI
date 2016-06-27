@@ -5,7 +5,7 @@ from tkinter.messagebox import showinfo
 import MySQLdb
 
 #definimos metodos que seran utilizados
-def iniciar():
+def iniciar():#metodo para iniciar sesion
     #Validamos campos vacios
     if(user.get()=="" or contra.get()==""):
         showinfo("Error", "Rellene campos vacios")
@@ -13,7 +13,6 @@ def iniciar():
         #extraemos los datos de las cajas de texto
         usuario = user.get()
         passw = contra.get()
-
         try:#inteentamos conectar a la base de datos
             bd = MySQLdb.connect("localhost", "root", "", "setup")
             try:
@@ -32,20 +31,95 @@ def iniciar():
         except MySQLdb.OperationalError:
             showinfo("Error", "No se pudo conectar a la base de datos, pongase en contacto con el desarrollador")
 
-def principal():
-    principal = Toplevel()
-    principal.title("Principal")
-    principal.geometry("600x600")
+
+def principal():#metodo para definir la ventana, luego de iniciar sesion
+    pri = Toplevel()
+    pri.title("Principal")
+    pri.geometry("600x600")
+    pri.config(bg="#6E6E6E")
+    def vencrear():
+        c = Toplevel()
+        c.title("Insertar nota")
+        c.geometry("600x600")
+        c.config(bg="#6E6E6E")
+        titulo = Label(c, text="Titulo").place(x=100, y =100)
+        til = StringVar()
+        cajaTil = Entry(c,textvariable=til).place(x=250,y=100)
+        cuerpo = Label(c, text="Cuerpo").place(x=100, y = 250)
+        cu = StringVar()
+        cajaCur = Entry(c, textvariable=cu, width=50).place(x=250, y=250)
+        def insertar():
+            if(til.get()=="" or cu.get()==""):
+                showinfo("Error", "Rellene informacion")
+            else:
+                title = til.get()
+                body = cu.get()
+                val = (title, body)
+                try:
+                    bf = MySQLdb.connect("localhost", "root", "", "setup")
+                    try:
+                        query = bf.cursor()
+                        sq = "INSERT INTO notas (titulo, cuerpo) VALUES (%s,%s)"
+                        query.execute(sq, val)
+                        bf.commit()
+                        bf.close()
+                        showinfo("Exito", "Agregada nota con exito")
+                        til.set("")
+                        cu.set("")
+                    except:
+                        bf.rollback()
+                        showinfo("Error", "Ocurrio un error")
+                except MySQLdb.OperationalError:
+                    showinfo("Error", "No se puede conectar a la base de datos, pongase en contacto con el administrador")
+        insertar = Button(c, text="Insertar", command=insertar).place(x=300, y=300)
+    def venMostrar():
+        m = Toplevel()
+        m.title("Visualizar")
+        m.geometry("600x600")
+        m.config(bg="#6E6E6E")
+
+        nomos = StringVar()
+        #nota = Entry(m, textvariable=nomos).place(x=100, y=100)
+        nota = Label(m, textvariable=nomos).place(x=100, y=100)
+        def vis():
+           try:
+               nb = MySQLdb.connect("localhost", "root", "", "setup")
+               try:
+                   hp = nb.cursor()
+                   qsl = "SELECT * FROM notas"
+                   hp.execute(qsl)
+                   resultado = hp.fetchall()
+                   for registro in resultado:
+                       titulo = registro[1]
+                       cuerpo = registro[2]
+                       #nomos.set("Titulo: "+titulo+"\nNota: "+cuerpo)
+                       nomos.set("Titulo=%s, Cuerpo=%s" % (titulo, cuerpo))
+                       print("Titulo=%s, Cuerpo=%s" % (titulo, cuerpo))
+                       showinfo("Notas","Titulo=%s, Cuerpo=%s" % (titulo, cuerpo))
+
+                   nb.close()
+               except:
+                   showinfo("Error", "Se ha producido un error")
+           except MySQLdb.OperationalError:
+                showinfo("Error", "No se puede conectar a la base de datos, pongase en contacto con el administrador")
+
+        ver = Button(m, text="Ver", command=vis).place(x=400, y = 500)
+
+
+    opcion = Label(pri, text="Elija una opcion", bg="#6E6E6E", fg="#000000", font="Arial").place(x=100, y=100)
+    crear = Button(pri, text="Crear", command=vencrear).place(x=150, y=150)
+    borrar = Button(pri, text="Eliminar").place(x=250, y=150)
+    actualizar = Button(pri, text="Actualizar").place(x=150, y=250)
+    mostrar = Button(pri, text="Ver", command=venMostrar).place(x=250, y =250)
 
 
 
-def Ventanaregistrar():
+
+def Ventanaregistrar():#metodo que abre el panel de registro
     registrarventana = Toplevel()
     registrarventana.title("Registrar")
     registrarventana.geometry("600x600")
     registrarventana.config(bg="#6E6E6E")
-    # imagenregis = PhotoImage(file="registrar.png")
-    # etiquetaRegi = Label(registrarventana, image=imagenregis).place(x=50, y=30)
     nombre = Label(registrarventana, text="Nombres", bg="#6E6E6E", fg="#000000", font="Arial").place(x=150, y=100)
     nom = StringVar()
     cajaNom = Entry(registrarventana, textvariable=nom).place(x=250, y=100)
@@ -64,7 +138,7 @@ def Ventanaregistrar():
     recontra = Label(registrarventana, text="Repetir", bg="#6E6E6E", fg="#000000", font="Arial").place(x=150, y=350)
     recon = StringVar()
     cajaReContra = Entry(registrarventana, textvariable=recon, show="*").place(x=250, y=350)
-    def registrarUs():
+    def registrarUs(): #metodo para registrar
         if(nom.get()=="" or apel.get()=="" or sex.get()=="" or ema.get()=="" or con.get()==""):
             showinfo("Falta Informacion", "Rellene informacion faltante")
         elif (con.get() != recon.get()):
